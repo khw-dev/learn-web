@@ -1,19 +1,21 @@
 <html>
     <head>
         <title>블로그</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
     </head>
     <body>
         <header>
-            <a href="/" class="title">
+            <a href="/">
                 <h1>나의 블로그</h1>
             </a>
         </header>
         <main>
-            {% block content %}{% endblock %}
+            <h1>Post</h1>
+            <h2>웹서버 만들기</h2>
+            <p>작성자: asdf | 날짜: 24.08.06</p>
+            <p>Flask를 이용해 웹 서버를 만들어봅시다.</p>
         </main>
         <footer>
-            <a class="email" href="mailto:asdf@asdf.com">asdf@asdf.com</a>
+            <p>asfd@asdf.com</p>
         </footer>
     </body>
 </html>
