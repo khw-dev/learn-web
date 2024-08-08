@@ -1,26 +1,21 @@
-from flask import Flask, render_template
+from flask import Flask
 
 app = Flask(__name__)
 
-post_data = [
-    {
-        "title": "블로그 만들기",
-        "author": "asdf",
-        "date": "2024-08-06",
-        "content": "오늘은 Flask로 블로그를 만들어보았다.",
-    }
-]
-
 @app.route("/")
-def index():
-    return render_template("index.html", posts=post_data)
+def home():
+    return "<html><body><h1>Hello, World!</h1></body></html>"
 
 
-@app.route("/post/<int:post_id>")
-def post(post_id):
-    post = post_data[post_id - 1]
-    return render_template("post.html", post=post)
+@app.route("/about")
+def about():
+    return "<html><body><h1>About Page</h1></body></html>"
+
+
+@app.route("/post")
+def post():
+    return "<html><body><h1>Post</h1><h3>웹서버 만들기</h3><p>asdf</p><a href=\"/\">홈으로 가기</a></body></html>"
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+    app.run()
