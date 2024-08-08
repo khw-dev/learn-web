@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <h2>피드백 남기기</h2>
 <form method="post" class="feedback_form">
     <label for="name">이름</label>
@@ -9,4 +10,5 @@
     <textarea id="message" name="message" required></textarea>
     <button type="submit">제출</button>
 </form>
+
 {% endblock content %}
