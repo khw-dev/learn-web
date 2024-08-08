@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>작업 수정</h2>
+<form method="post">
+    <label for="task">작업:</label>
+    <input type="text" id="task" name="task" value="{{todo[1]}}" required><br><br>
+    <label for="done">완료:</label>
+    <input type="checkbox" id="done" name="done" {% if todo[2] %}checked{% endif %}><br><br>
+    <button type="submit">수정</button>
+</form>
+
+{% endblock content %}

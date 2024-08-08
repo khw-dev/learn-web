@@ -3,32 +3,13 @@ import sqlite3
 
 app = Flask(__name__)
 
-post_data = [
-    {
-        "title": "블로그 만들기",
-        "author": "asdf",
-        "date": "2024-08-06",
-        "content": "오늘은 Flask로 블로그를 만들어보았다.",
-    },{
-        "title": "홈페이지 만들기",
-        "author": "asdf",
-        "date": "2024-08-07",
-        "content": "오늘은 Flask로 홈페이지를 만들어보았다.",
-    },{
-        "title": "db 연동하기",
-        "author": "asdf",
-        "date": "2024-08-08",
-        "content": "오늘은 sqlite를 연동해보았다.",
-    }
-]
-
 def init_db():
-    conn = sqlite3.connect("feedback.db")
+    conn = sqlite3.connect("todo.db")
     c = conn.cursor()
     c.execute(
         """
-        CREATE TABLE IF NOT EXISTS feedbacks
-        (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, message TEXT)
+        CREATE TABLE IF NOT EXISTS todos
+        (id INTEGER PRIMARY KEY AUTOINCREMENT, task TEXT, done BOOLEAN)
         """
     )
     conn.commit()
@@ -38,36 +19,57 @@ init_db()
 
 @app.route("/")
 def index():
-    return render_template("index.html", posts=post_data)
+    conn = sqlite3.connect("todo.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM todos")
+    todos = c.fetchall()
+    conn.close()
+    return render_template("index.html", todos=todos)
 
-
-@app.route("/post/<int:post_id>")
-def post(post_id):
-    post = post_data[post_id - 1]
-    return render_template("post.html", post=post)
-
-@app.route("/feedback", methods=["GET", "POST"])
-def feedback():
+@app.route("/add", methods=["GET", "POST"])
+def add():
     if request.method == "POST":
-        name = request.form["name"]
-        message = request.form["message"]
-        conn = sqlite3.connect("feedback.db")
+        todo = request.form["task"]
+        conn = sqlite3.connect("todo.db")
         c = conn.cursor()
-        c.execute("INSERT INTO feedbacks (name, message) VALUES (?, ?)", (name, message))
+        c.execute("INSERT INTO todos (task, done) VALUES (?, ?)", (todo, False))
         conn.commit()
         conn.close()
-        return redirect(url_for("show_feedback"))
-    return render_template("feedback.html")
+        return redirect(url_for("index"))
+    return render_template("add.html")
 
-@app.route("/show_feedback")
-def show_feedback():
-    conn = sqlite3.connect("feedback.db")
+@app.route("/update/<int:todo_id>", methods=["GET", "POST"])
+def update(todo_id):
+    conn = sqlite3.connect("todo.db")
     c = conn.cursor()
-    c.execute("SELECT * FROM feedbacks")
-    feedbacks = c.fetchall()
-    print(feedbacks)
+    c.execute("SELECT * FROM todos WHERE id=?", (todo_id,))
+    todo = c.fetchone()
     conn.close()
-    return render_template("show_feedback.html", feedbacks=feedbacks)
+    if request.method == "POST":
+        task = request.form["task"]
+        done = request.form.get("done") == "on"
+        conn = sqlite3.connect("todo.db")
+        c = conn.cursor()
+        c.execute("UPDATE todos SET done=? WHERE id=?", (done, todo_id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for("index"))
+    else:
+        conn = sqlite3.connect("todo.db")
+        c = conn.cursor()
+        c.execute("SELECT * FROM todos WHERE id=?", (todo_id,))
+        todo = c.fetchone()
+        conn.close()
+    return render_template("update.html", todo=todo)
+
+@app.route("/delete/<int:todo_id>")
+def delete(todo_id):
+    conn = sqlite3.connect("todo.db")
+    c = conn.cursor()
+    c.execute("DELETE FROM todos WHERE id=?", (todo_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":

@@ -2,11 +2,16 @@
 
 {% block content %}
 
-<h2>블로그 포스트 바로가기</h2>
-{% for p in posts %}
-<a href="{{ url_for('post', post_id=loop.index) }}">
-    <h3>{{p.title}} | {{p.date}}</h3>
-</a>
-{% endfor %}
+<h2>작업 목록</h2>
+<ul>
+    {% for todo in todos %}
+    <li>
+        {{ todo[1] }} - {{ '완료' if todo[2] else '미완료' }}
+        <a href="{{ url_for('update', todo_id=todo[0]) }}">수정</a>
+        <a href="{{ url_for('delete', todo_id=todo[0]) }}">삭제</a>
+
+    </li>
+    {% endfor %}
+</ul>
 
 {% endblock content %}

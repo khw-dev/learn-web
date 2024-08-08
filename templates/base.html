@@ -1,24 +1,15 @@
 <html>
-    <head>
-        <title>블로그</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
-    </head>
     <body>
         <header>
-            <a href="/" class="title">
-                <h1>나의 블로그</h1>
-            </a>
+            <h1>TODO 리스트</h1>
+            <nav>
+                <a href="{{url_for('index')}}">홈</a>
+                <a href="{{url_for('add')}}">새 작업 추가</a>
+            </nav>
         </header>
         <main>
-            {% block content %}{% endblock %}
+            {% block content %}
+            {% endblock %}
         </main>
-        <div class="feedback">
-            <h2>피드백 남기기</h2>
-            <a href="/feedback">피드백 남기기</a>
-            <a href="/show_feedback">피드백 보기</a>
-        </div>
-        <footer>
-            <a class="email" href="mailto:asdf@js.hs.kr">asdf@js.hs.kr</a>
-        </footer>
     </body>
 </html>
